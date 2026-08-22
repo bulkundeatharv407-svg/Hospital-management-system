@@ -1,1 +1,2292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🏥 Panacea – HMS Live</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet" />
+    <style>
+        /* ============================================================
+                   RESET & BASE (same as previous, kept concise)
+                   ============================================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --primary: #0a6e79;
+            --primary-light: #0f8b99;
+            --primary-dark: #06525a;
+            --primary-bg: #e6f4f6;
+            --sidebar-width: 260px;
+            --header-height: 64px;
+            --radius: 14px;
+            --shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+            --shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.10);
+            --transition: 0.25s ease;
+            --font: 'Inter', system-ui, -apple-system, sans-serif;
+            --gray-50: #f9fafc;
+            --gray-100: #f1f3f6;
+            --gray-200: #e4e7ed;
+            --gray-300: #c8cdd8;
+            --gray-400: #9aa1b0;
+            --gray-500: #6e778a;
+            --gray-600: #4a5268;
+            --gray-700: #2d3548;
+            --gray-800: #1a2235;
+            --gray-900: #0d1424;
+            --danger: #e74c5e;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --info: #3498db;
+            --purple: #8e44ad;
+            --orange: #e67e22;
+        }
+        html {
+            font-size: 15px;
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: var(--font);
+            background: var(--gray-50);
+            color: var(--gray-700);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        button {
+            cursor: pointer;
+            font-family: inherit;
+            border: none;
+            outline: none;
+            background: none;
+        }
+        input,
+        select,
+        textarea {
+            font-family: inherit;
+            outline: none;
+            border: none;
+        }
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--gray-100);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--gray-300);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--gray-400);
+        }
 
+        /* ============================================================
+                   SIDEBAR (same)
+                   ============================================================ */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, #0d1b2a 0%, #0f2438 100%);
+            color: #c8d6e5;
+            padding: 0 0 20px 0;
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+            transition: transform var(--transition);
+            overflow-y: auto;
+            overflow-x: hidden;
+            box-shadow: 4px 0 30px rgba(0, 0, 0, 0.15);
+        }
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 20px 22px 18px 22px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            flex-shrink: 0;
+        }
+        .sidebar-brand i {
+            font-size: 28px;
+            color: #4fc3f7;
+            background: rgba(79, 195, 247, 0.12);
+            padding: 8px;
+            border-radius: 12px;
+        }
+        .sidebar-brand h1 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: -0.3px;
+        }
+        .sidebar-brand small {
+            font-size: 10px;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.4);
+            display: block;
+            margin-top: -2px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .sidebar-nav {
+            flex: 1;
+            padding: 12px 12px 20px 12px;
+            overflow-y: auto;
+        }
+        .sidebar-nav .nav-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.25);
+            padding: 16px 14px 6px 14px;
+            font-weight: 600;
+        }
+        .sidebar-nav .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            color: rgba(255, 255, 255, 0.6);
+            transition: all var(--transition);
+            margin: 2px 0;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+            position: relative;
+        }
+        .sidebar-nav .nav-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            color: #fff;
+        }
+        .sidebar-nav .nav-item.active {
+            background: rgba(79, 195, 247, 0.15);
+            color: #4fc3f7;
+            box-shadow: inset 3px 0 0 #4fc3f7;
+        }
+        .sidebar-nav .nav-item i {
+            width: 22px;
+            font-size: 17px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+        .sidebar-nav .nav-item .badge {
+            margin-left: auto;
+            background: rgba(231, 76, 94, 0.2);
+            color: #ef7a8a;
+            font-size: 11px;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+        .sidebar-footer {
+            padding: 16px 22px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+        .sidebar-footer .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4fc3f7, #1a8bc0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 700;
+            font-size: 14px;
+        }
+        .sidebar-footer .user-info {
+            flex: 1;
+        }
+        .sidebar-footer .user-info .name {
+            font-size: 13px;
+            font-weight: 600;
+            color: #fff;
+        }
+        .sidebar-footer .user-info .role {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.4);
+        }
+        .sidebar-footer .role-switch {
+            font-size: 11px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            background: rgba(79, 195, 247, 0.15);
+            color: #4fc3f7;
+            cursor: pointer;
+            transition: all var(--transition);
+            border: 1px solid rgba(79, 195, 247, 0.15);
+        }
+        .sidebar-footer .role-switch:hover {
+            background: rgba(79, 195, 247, 0.25);
+        }
+
+        /* ============================================================
+                   MAIN CONTENT
+                   ============================================================ */
+        .main {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .header {
+            height: var(--header-height);
+            background: #fff;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(8px);
+            background: rgba(255, 255, 255, 0.92);
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+        .header-left .menu-toggle {
+            display: none;
+            font-size: 20px;
+            color: var(--gray-600);
+            padding: 4px 8px;
+            border-radius: 8px;
+            background: var(--gray-100);
+        }
+        .header-left .page-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--gray-800);
+        }
+        .header-left .page-title span {
+            color: var(--gray-400);
+            font-weight: 400;
+        }
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .header-right .icon-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray-500);
+            background: var(--gray-100);
+            transition: all var(--transition);
+            font-size: 17px;
+            position: relative;
+        }
+        .header-right .icon-btn:hover {
+            background: var(--gray-200);
+            color: var(--gray-700);
+        }
+        .header-right .icon-btn .dot {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--danger);
+            border: 2px solid #fff;
+        }
+        .header-right .date-display {
+            font-size: 13px;
+            color: var(--gray-500);
+            font-weight: 500;
+            padding: 6px 14px;
+            background: var(--gray-100);
+            border-radius: 20px;
+        }
+        .header-right .view-toggle {
+            display: flex;
+            gap: 4px;
+            background: var(--gray-100);
+            border-radius: 30px;
+            padding: 3px;
+        }
+        .header-right .view-toggle button {
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--gray-500);
+            transition: all var(--transition);
+        }
+        .header-right .view-toggle button.active {
+            background: #fff;
+            color: var(--primary);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+        }
+        .header-right .view-toggle button:hover {
+            color: var(--gray-700);
+        }
+        .content {
+            padding: 28px 30px 40px 30px;
+            flex: 1;
+        }
+
+        /* ============================================================
+                   PAGE SECTIONS
+                   ============================================================ */
+        .page-section {
+            display: none;
+            animation: fadeUp 0.35s ease;
+        }
+        .page-section.active {
+            display: block;
+        }
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ============================================================
+                   STATS GRID
+                   ============================================================ */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 18px;
+            margin-bottom: 28px;
+        }
+        .stat-card {
+            background: #fff;
+            border-radius: var(--radius);
+            padding: 20px 22px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--gray-200);
+            transition: all var(--transition);
+        }
+        .stat-card:hover {
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-2px);
+        }
+        .stat-card .stat-label {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--gray-500);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .stat-card .stat-label i {
+            font-size: 16px;
+            color: var(--primary);
+        }
+        .stat-card .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--gray-800);
+            margin-top: 4px;
+        }
+        .stat-card .stat-change {
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 12px;
+            border-radius: 20px;
+            background: var(--gray-100);
+        }
+        .stat-card .stat-change.up {
+            color: var(--success);
+            background: #e8f8ef;
+        }
+        .stat-card .stat-change.down {
+            color: var(--danger);
+            background: #fde8eb;
+        }
+        .stat-card .stat-change.neutral {
+            color: var(--gray-500);
+            background: var(--gray-100);
+        }
+
+        /* ============================================================
+                   AI INSIGHT BANNER
+                   ============================================================ */
+        .ai-insight {
+            background: linear-gradient(135deg, #0d1b2a, #1a2f44);
+            border-radius: var(--radius);
+            padding: 20px 28px;
+            color: #fff;
+            margin-bottom: 28px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid rgba(79, 195, 247, 0.15);
+        }
+        .ai-insight .left {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+        .ai-insight .left i {
+            font-size: 28px;
+            color: #4fc3f7;
+            background: rgba(79, 195, 247, 0.15);
+            padding: 12px;
+            border-radius: 14px;
+        }
+        .ai-insight .left .title {
+            font-weight: 600;
+            font-size: 16px;
+        }
+        .ai-insight .left .desc {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 2px;
+        }
+        .ai-insight .tags {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .ai-insight .tags span {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .ai-insight .tags span i {
+            margin-right: 6px;
+            color: #4fc3f7;
+        }
+        .ai-insight .tags .confidence {
+            background: rgba(46, 204, 113, 0.15);
+            color: #6fdf9a;
+            border-color: rgba(46, 204, 113, 0.2);
+        }
+
+        /* ============================================================
+                   RISK CARDS
+                   ============================================================ */
+        .risk-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+        .risk-card {
+            background: #fff;
+            border-radius: var(--radius);
+            padding: 18px 20px;
+            border: 1px solid var(--gray-200);
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+        .risk-card .number {
+            font-size: 30px;
+            font-weight: 700;
+        }
+        .risk-card .label {
+            font-size: 13px;
+            color: var(--gray-500);
+            margin-top: 2px;
+        }
+        .risk-card .change {
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 6px;
+        }
+        .risk-card.high .number {
+            color: var(--danger);
+        }
+        .risk-card.high .change {
+            color: var(--danger);
+        }
+        .risk-card.moderate .number {
+            color: var(--warning);
+        }
+        .risk-card.moderate .change {
+            color: var(--success);
+        }
+        .risk-card.low .number {
+            color: var(--success);
+        }
+        .risk-card.low .change {
+            color: var(--success);
+        }
+
+        /* ============================================================
+                   TWO COLUMN LAYOUT
+                   ============================================================ */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1.6fr 1fr;
+            gap: 24px;
+            margin-bottom: 28px;
+        }
+        .card {
+            background: #fff;
+            border-radius: var(--radius);
+            border: 1px solid var(--gray-200);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+        .card-header {
+            padding: 16px 22px;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .card-header h3 {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--gray-800);
+        }
+        .card-header .action-link {
+            font-size: 13px;
+            color: var(--primary);
+            font-weight: 500;
+            cursor: pointer;
+        }
+        .card-body {
+            padding: 18px 22px;
+        }
+        .card-body .empty-state {
+            text-align: center;
+            padding: 30px 10px;
+            color: var(--gray-400);
+        }
+        .card-body .empty-state i {
+            font-size: 40px;
+            margin-bottom: 10px;
+            opacity: 0.4;
+        }
+
+        /* ============================================================
+                   APPOINTMENT LIST
+                   ============================================================ */
+        .appt-list .appt-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--gray-100);
+        }
+        .appt-list .appt-item:last-child {
+            border-bottom: none;
+        }
+        .appt-list .appt-time {
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--gray-600);
+            min-width: 60px;
+        }
+        .appt-list .appt-info {
+            flex: 1;
+        }
+        .appt-list .appt-info .name {
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--gray-800);
+        }
+        .appt-list .appt-info .detail {
+            font-size: 12px;
+            color: var(--gray-500);
+        }
+        .appt-list .appt-status {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 12px;
+            border-radius: 20px;
+        }
+        .appt-list .appt-status.scheduled {
+            background: #e3f0fd;
+            color: #2471a3;
+        }
+        .appt-list .appt-status.completed {
+            background: #e8f8ef;
+            color: #1e8449;
+        }
+        .appt-list .appt-status.missed {
+            background: #fde8eb;
+            color: #b03a4a;
+        }
+        .appt-list .appt-status.canceled {
+            background: var(--gray-200);
+            color: var(--gray-500);
+        }
+        .appt-list .appt-status.waiting {
+            background: #fef9e7;
+            color: #b7950b;
+        }
+
+        /* ============================================================
+                   ROOMS
+                   ============================================================ */
+        .rooms-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+        .room-stat {
+            background: var(--gray-50);
+            border-radius: 10px;
+            padding: 14px 16px;
+            border: 1px solid var(--gray-200);
+        }
+        .room-stat .num {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--gray-800);
+        }
+        .room-stat .label {
+            font-size: 13px;
+            color: var(--gray-500);
+        }
+        .room-stat .bar {
+            height: 6px;
+            background: var(--gray-200);
+            border-radius: 10px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+        .room-stat .bar .fill {
+            height: 100%;
+            border-radius: 10px;
+            background: var(--primary);
+        }
+        .room-stat .bar .fill.orange {
+            background: var(--warning);
+        }
+
+        /* ============================================================
+                   CHART
+                   ============================================================ */
+        .chart-placeholder {
+            height: 180px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            padding: 10px 0;
+            gap: 8px;
+        }
+        .chart-bar {
+            flex: 1;
+            background: var(--primary-bg);
+            border-radius: 6px 6px 0 0;
+            min-height: 12px;
+            transition: height 0.6s ease;
+            position: relative;
+        }
+        .chart-bar .val {
+            position: absolute;
+            top: -22px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--gray-600);
+        }
+        .chart-bar:nth-child(1) {
+            height: 60%;
+        }
+        .chart-bar:nth-child(2) {
+            height: 85%;
+        }
+        .chart-bar:nth-child(3) {
+            height: 45%;
+        }
+        .chart-bar:nth-child(4) {
+            height: 70%;
+        }
+        .chart-bar:nth-child(5) {
+            height: 90%;
+        }
+        .chart-bar:nth-child(6) {
+            height: 55%;
+        }
+        .chart-bar:nth-child(7) {
+            height: 75%;
+        }
+        .chart-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--gray-400);
+            padding-top: 6px;
+        }
+
+        /* ============================================================
+                   TABLE
+                   ============================================================ */
+        .table-wrap {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        table th {
+            text-align: left;
+            padding: 12px 14px;
+            font-weight: 600;
+            color: var(--gray-500);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            border-bottom: 2px solid var(--gray-200);
+            background: var(--gray-50);
+        }
+        table td {
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--gray-100);
+            color: var(--gray-700);
+            vertical-align: middle;
+        }
+        table tr:hover td {
+            background: var(--gray-50);
+        }
+        .badge-status {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 14px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+        .badge-status.active {
+            background: #e8f8ef;
+            color: #1e8449;
+        }
+        .badge-status.inactive {
+            background: var(--gray-200);
+            color: var(--gray-500);
+        }
+        .badge-status.pending {
+            background: #fef9e7;
+            color: #b7950b;
+        }
+        .badge-status.critical {
+            background: #fde8eb;
+            color: #b03a4a;
+        }
+        .badge-status.urgent {
+            background: #fdebd0;
+            color: #ca6f1e;
+        }
+        .badge-status.normal {
+            background: #eaf2f8;
+            color: #2471a3;
+        }
+        .badge-status.info {
+            background: #d6eaf8;
+            color: #1a5276;
+        }
+        .badge-status.warning {
+            background: #fef9e7;
+            color: #b7950b;
+        }
+
+        /* ============================================================
+                   TOOLBAR
+                   ============================================================ */
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 20px;
+            background: #fff;
+            padding: 14px 20px;
+            border-radius: var(--radius);
+            border: 1px solid var(--gray-200);
+            box-shadow: var(--shadow);
+        }
+        .toolbar .search-box {
+            flex: 1;
+            min-width: 180px;
+            display: flex;
+            align-items: center;
+            background: var(--gray-50);
+            border-radius: 30px;
+            padding: 0 16px;
+            border: 1px solid var(--gray-200);
+            transition: all var(--transition);
+        }
+        .toolbar .search-box:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(10, 110, 121, 0.08);
+        }
+        .toolbar .search-box i {
+            color: var(--gray-400);
+            font-size: 14px;
+        }
+        .toolbar .search-box input {
+            padding: 9px 12px;
+            background: transparent;
+            width: 100%;
+            font-size: 14px;
+            color: var(--gray-700);
+        }
+        .toolbar .filters {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .toolbar .filters select {
+            padding: 9px 14px;
+            border-radius: 30px;
+            border: 1px solid var(--gray-200);
+            background: var(--gray-50);
+            font-size: 13px;
+            color: var(--gray-600);
+            min-width: 120px;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 20px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all var(--transition);
+            border: 1px solid transparent;
+        }
+        .btn-primary {
+            background: var(--primary);
+            color: #fff;
+        }
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(10, 110, 121, 0.25);
+        }
+        .btn-outline {
+            background: transparent;
+            border-color: var(--gray-200);
+            color: var(--gray-600);
+        }
+        .btn-outline:hover {
+            background: var(--gray-100);
+        }
+        .btn-success {
+            background: var(--success);
+            color: #fff;
+        }
+        .btn-success:hover {
+            background: #28b463;
+            transform: translateY(-1px);
+        }
+        .btn-danger {
+            background: var(--danger);
+            color: #fff;
+        }
+        .btn-danger:hover {
+            background: #c0392b;
+            transform: translateY(-1px);
+        }
+        .btn-sm {
+            padding: 5px 14px;
+            font-size: 12px;
+        }
+        .btn-warning {
+            background: var(--warning);
+            color: #fff;
+        }
+        .btn-warning:hover {
+            background: #d4ac0d;
+            transform: translateY(-1px);
+        }
+
+        /* ============================================================
+                   QUEUE DISPLAY
+                   ============================================================ */
+        .queue-display {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
+            margin: 16px 0;
+        }
+        .queue-item {
+            background: #fff;
+            border-radius: var(--radius);
+            padding: 20px;
+            text-align: center;
+            border: 1px solid var(--gray-200);
+            box-shadow: var(--shadow);
+        }
+        .queue-item .token {
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--primary);
+        }
+        .queue-item .label {
+            font-size: 13px;
+            color: var(--gray-500);
+        }
+        .queue-item .sub {
+            font-size: 12px;
+            color: var(--gray-400);
+            margin-top: 4px;
+        }
+        .queue-item.highlight {
+            border-color: var(--primary);
+            background: var(--primary-bg);
+        }
+        .queue-item.emergency {
+            border-color: var(--danger);
+            background: #fde8eb;
+        }
+        .queue-item.emergency .token {
+            color: var(--danger);
+        }
+
+        /* ============================================================
+                   MODULE GRID
+                   ============================================================ */
+        .module-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 16px;
+        }
+        .module-card {
+            background: #fff;
+            border-radius: var(--radius);
+            padding: 22px 24px;
+            border: 1px solid var(--gray-200);
+            box-shadow: var(--shadow);
+            transition: all var(--transition);
+            cursor: pointer;
+        }
+        .module-card:hover {
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-3px);
+            border-color: var(--primary-light);
+        }
+        .module-card .icon {
+            font-size: 28px;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        .module-card h4 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--gray-800);
+        }
+        .module-card p {
+            font-size: 13px;
+            color: var(--gray-500);
+            margin-top: 4px;
+        }
+        .module-card .count {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--gray-400);
+            margin-top: 8px;
+        }
+
+        /* ============================================================
+                   REGISTRATION FORM
+                   ============================================================ */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px 24px;
+        }
+        .form-grid .full-width {
+            grid-column: 1 / -1;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .form-group label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--gray-600);
+        }
+        .form-group label .required {
+            color: var(--danger);
+            margin-left: 2px;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 10px 14px;
+            border-radius: 10px;
+            border: 1px solid var(--gray-200);
+            background: var(--gray-50);
+            font-size: 14px;
+            color: var(--gray-700);
+            transition: all var(--transition);
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(10, 110, 121, 0.08);
+            background: #fff;
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+        .form-row {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .form-row .form-group {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        /* ============================================================
+                   MEDICAL RECORDS (Patient View)
+                   ============================================================ */
+        .record-timeline {
+            position: relative;
+            padding-left: 24px;
+        }
+        .record-timeline::before {
+            content: '';
+            position: absolute;
+            left: 6px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--gray-200);
+        }
+        .record-item {
+            position: relative;
+            padding: 12px 0 12px 20px;
+            border-bottom: 1px solid var(--gray-100);
+        }
+        .record-item:last-child {
+            border-bottom: none;
+        }
+        .record-item::before {
+            content: '';
+            position: absolute;
+            left: -20px;
+            top: 18px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--primary);
+            border: 2px solid #fff;
+            box-shadow: 0 0 0 3px var(--primary);
+        }
+        .record-item .record-date {
+            font-size: 12px;
+            color: var(--gray-400);
+            font-weight: 500;
+        }
+        .record-item .record-title {
+            font-weight: 600;
+            color: var(--gray-800);
+        }
+        .record-item .record-detail {
+            font-size: 13px;
+            color: var(--gray-500);
+            margin-top: 2px;
+        }
+        .record-item .record-doc {
+            font-size: 12px;
+            color: var(--gray-400);
+            margin-top: 2px;
+        }
+
+        /* ============================================================
+                   WAITING BANNER
+                   ============================================================ */
+        .waiting-banner {
+            background: linear-gradient(135deg, #0d1b2a, #1a2f44);
+            border-radius: var(--radius);
+            padding: 24px 32px;
+            color: #fff;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            border: 1px solid rgba(79, 195, 247, 0.15);
+        }
+        .waiting-banner .big-number {
+            font-size: 48px;
+            font-weight: 800;
+            color: #4fc3f7;
+            line-height: 1;
+        }
+        .waiting-banner .big-label {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+        .waiting-banner .waiting-details {
+            display: flex;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+        .waiting-banner .waiting-details .item {
+            text-align: center;
+        }
+        .waiting-banner .waiting-details .item .num {
+            font-size: 28px;
+            font-weight: 700;
+            color: #fff;
+        }
+        .waiting-banner .waiting-details .item .lbl {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* ============================================================
+                   RESPONSIVE
+                   ============================================================ */
+        @media (max-width: 992px) {
+            .two-col {
+                grid-template-columns: 1fr;
+            }
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            .main {
+                margin-left: 0;
+            }
+            .header-left .menu-toggle {
+                display: block;
+            }
+            .header-left .page-title {
+                font-size: 16px;
+            }
+            .content {
+                padding: 18px 16px 30px 16px;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 12px;
+            }
+            .ai-insight {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 14px;
+            }
+            .ai-insight .tags {
+                width: 100%;
+            }
+            .rooms-grid {
+                grid-template-columns: 1fr;
+            }
+            .toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .toolbar .filters {
+                flex-wrap: wrap;
+            }
+            .header-right .date-display {
+                display: none;
+            }
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            .form-grid .full-width {
+                grid-column: 1;
+            }
+            .waiting-banner {
+                flex-direction: column;
+                gap: 16px;
+                text-align: center;
+            }
+            .waiting-banner .waiting-details {
+                justify-content: center;
+            }
+            .header-right .view-toggle {
+                display: none;
+            }
+        }
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .risk-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .stat-card .stat-value {
+                font-size: 22px;
+            }
+            .queue-display {
+                grid-template-columns: 1fr 1fr;
+            }
+            .waiting-banner .big-number {
+                font-size: 36px;
+            }
+            .waiting-banner .waiting-details {
+                gap: 20px;
+            }
+            .waiting-banner .waiting-details .item .num {
+                font-size: 22px;
+            }
+        }
+
+        /* ============================================================
+                   TOAST
+                   ============================================================ */
+        .toast-container {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .toast {
+            background: var(--gray-800);
+            color: #fff;
+            padding: 14px 22px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            animation: slideUp 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            max-width: 380px;
+        }
+        .toast.success {
+            border-left: 4px solid var(--success);
+        }
+        .toast.error {
+            border-left: 4px solid var(--danger);
+        }
+        .toast.info {
+            border-left: 4px solid var(--info);
+        }
+        .toast i {
+            font-size: 18px;
+        }
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ============================================================
+                   ROLE INDICATOR
+                   ============================================================ */
+        .role-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            background: var(--primary-bg);
+            color: var(--primary);
+        }
+        .role-indicator.doctor {
+            background: #e8f8ef;
+            color: #1e8449;
+        }
+        .role-indicator.patient {
+            background: #fdebd0;
+            color: #ca6f1e;
+        }
+
+        /* ============================================================
+                   SCROLLBAR SIDEBAR
+                   ============================================================ */
+        .sidebar::-webkit-scrollbar {
+            width: 3px;
+        }
+        .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+        }
+        .fade-in {
+            animation: fadeUp 0.4s ease;
+        }
+        .consult-form {
+            background: var(--gray-50);
+            border-radius: 10px;
+            padding: 16px;
+            margin-top: 12px;
+            border: 1px solid var(--gray-200);
+        }
+        .consult-form .form-group {
+            margin-bottom: 10px;
+        }
+        .consult-form .form-group:last-child {
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================================
+    SIDEBAR
+    ============================================================ -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <i class="fas fa-heartbeat"></i>
+            <div>
+                <h1>Panacea</h1>
+                <small>HMS v3.0</small>
+            </div>
+        </div>
+        <nav class="sidebar-nav">
+            <div class="nav-label">Main</div>
+            <div class="nav-item active" data-page="dashboard"><i class="fas fa-th-large"></i> Dashboard</div>
+            <div class="nav-item" data-page="patients"><i class="fas fa-user-injured"></i> Patients</div>
+            <div class="nav-item" data-page="appointments"><i class="fas fa-calendar-check"></i> Appointments</div>
+            <div class="nav-item" data-page="queue"><i class="fas fa-clock"></i> Queue <span class="badge" id="queueBadge">0</span></div>
+            <div class="nav-item" data-page="doctors"><i class="fas fa-user-md"></i> Doctors</div>
+
+            <div class="nav-label">Admin / Doctor</div>
+            <div class="nav-item" data-page="admin-dashboard"><i class="fas fa-user-shield"></i> Admin Panel</div>
+            <div class="nav-item" data-page="emr"><i class="fas fa-file-medical"></i> EMR</div>
+            <div class="nav-item" data-page="billing"><i class="fas fa-file-invoice-dollar"></i> Billing</div>
+
+            <div class="nav-label">Patient Portal</div>
+            <div class="nav-item" data-page="register"><i class="fas fa-user-plus"></i> Register</div>
+            <div class="nav-item" data-page="my-records"><i class="fas fa-notes-medical"></i> My Records</div>
+            <div class="nav-item" data-page="waiting"><i class="fas fa-hourglass-half"></i> Waiting Time</div>
+
+            <div class="nav-label">Operations</div>
+            <div class="nav-item" data-page="pharmacy"><i class="fas fa-pills"></i> Pharmacy</div>
+            <div class="nav-item" data-page="laboratory"><i class="fas fa-flask"></i> Laboratory</div>
+            <div class="nav-item" data-page="reports"><i class="fas fa-chart-pie"></i> Reports</div>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="avatar" id="userAvatar">DR</div>
+            <div class="user-info">
+                <div class="name" id="userName">Dr. Rajesh</div>
+                <div class="role" id="userRole">Super Admin</div>
+            </div>
+            <button class="role-switch" id="roleSwitch" onclick="toggleRole()"><i class="fas fa-exchange-alt"></i> Switch</button>
+        </div>
+    </aside>
+
+    <!-- ============================================================
+    MAIN CONTENT
+    ============================================================ -->
+    <div class="main">
+
+        <!-- HEADER -->
+        <header class="header">
+            <div class="header-left">
+                <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+                <div class="page-title" id="pageTitle">Dashboard <span>/ Overview</span></div>
+            </div>
+            <div class="header-right">
+                <span class="date-display" id="dateDisplay"></span>
+                <div class="view-toggle">
+                    <button class="active" id="viewAdmin" onclick="setView('admin')"><i class="fas fa-user-md"></i> Admin</button>
+                    <button id="viewPatient" onclick="setView('patient')"><i class="fas fa-user"></i> Patient</button>
+                </div>
+                <button class="icon-btn"><i class="fas fa-bell"></i><span class="dot"></span></button>
+                <button class="icon-btn"><i class="fas fa-envelope"></i></button>
+                <span class="role-indicator" id="roleIndicator"><i class="fas fa-user-md"></i> Admin</span>
+            </div>
+        </header>
+
+        <!-- CONTENT -->
+        <div class="content">
+
+            <!-- ============================================================
+            DASHBOARD
+            ============================================================ -->
+            <section class="page-section active" id="page-dashboard">
+                <div class="stats-grid" id="dashboardStats">
+                    <div class="stat-card"><div class="stat-label"><i class="fas fa-user-injured"></i> Total Patients</div><div class="stat-value" id="statTotalPatients">0</div><div class="stat-change up"><i class="fas fa-arrow-up"></i> 12.5%</div></div>
+                    <div class="stat-card"><div class="stat-label"><i class="fas fa-calendar-day"></i> Today's Appointments</div><div class="stat-value" id="statTodayAppts">0</div><div class="stat-change up"><i class="fas fa-arrow-up"></i> 8%</div></div>
+                    <div class="stat-card"><div class="stat-label"><i class="fas fa-clock"></i> Current Queue</div><div class="stat-value" id="statQueueCount">0</div><div class="stat-change neutral"><i class="fas fa-minus"></i> Stable</div></div>
+                    <div class="stat-card"><div class="stat-label"><i class="fas fa-user-md"></i> Doctors Available</div><div class="stat-value">34</div><div class="stat-change up"><i class="fas fa-arrow-up"></i> 4</div></div>
+                    <div class="stat-card"><div class="stat-label"><i class="fas fa-bed"></i> Beds Available</div><div class="stat-value">112</div><div class="stat-change down"><i class="fas fa-arrow-down"></i> 6%</div></div>
+                    <div class="stat-card"><div class="stat-label"><i class="fas fa-dollar-sign"></i> Revenue (MTD)</div><div class="stat-value">$284k</div><div class="stat-change up"><i class="fas fa-arrow-up"></i> 18%</div></div>
+                </div>
+                <div class="ai-insight">
+                    <div class="left"><i class="fas fa-robot"></i><div><div class="title">AI Clinical Decision Support</div><div class="desc">Predictive analytics • Real-time risk stratification</div></div></div>
+                    <div class="tags"><span><i class="fas fa-exclamation-triangle"></i> Sepsis Risk: 3 patients</span><span><i class="fas fa-heartbeat"></i> Chronic Disease: 7 patients</span><span class="confidence"><i class="fas fa-check-circle"></i> Model Confidence: 92%</span></div>
+                </div>
+                <div class="risk-grid"><div class="risk-card high"><div class="number">12</div><div class="label">High Risk</div><div class="change"><i class="fas fa-arrow-up"></i> +3%</div></div><div class="risk-card moderate"><div class="number">45</div><div class="label">Moderate Risk</div><div class="change"><i class="fas fa-arrow-down"></i> -2</div></div><div class="risk-card low"><div class="number">87</div><div class="label">Low Risk</div><div class="change"><i class="fas fa-arrow-up"></i> +87%</div></div></div>
+                <div class="two-col">
+                    <div class="card"><div class="card-header"><h3><i class="fas fa-calendar-alt" style="color:var(--primary);margin-right:8px;"></i> Appointment Overview</h3><span class="action-link" onclick="navigateTo('appointments')">View all →</span></div><div class="card-body"><div class="appt-list"><div class="appt-item"><span class="appt-time">7:28 AM</span><div class="appt-info"><div class="name">Jordan Rivers</div><div class="detail">Dr. Mehta • Cardiology</div></div><span class="appt-status scheduled">Scheduled</span></div><div class="appt-item"><span class="appt-time">11:12 AM</span><div class="appt-info"><div class="name">Taylor Green</div><div class="detail">Dr. Patel • Orthopedics</div></div><span class="appt-status completed">Completed</span></div><div class="appt-item"><span class="appt-time">2:31 PM</span><div class="appt-info"><div class="name">Morgan Sky</div><div class="detail">Dr. Sharma • Neurology</div></div><span class="appt-status scheduled">Scheduled</span></div></div></div></div>
+                    <div class="card"><div class="card-header"><h3><i class="fas fa-bed" style="color:var(--primary);margin-right:8px;"></i> Overall Rooms</h3><span class="action-link" onclick="navigateTo('beds')">Manage →</span></div><div class="card-body"><div class="rooms-grid"><div class="room-stat"><div class="num">112</div><div class="label">Total Rooms</div><div class="bar"><div class="fill" style="width:68%;"></div></div></div><div class="room-stat"><div class="num">82</div><div class="label">General Rooms</div><div class="bar"><div class="fill" style="width:72%;"></div></div></div><div class="room-stat"><div class="num">30</div><div class="label">Private Rooms</div><div class="bar"><div class="fill orange" style="width:55%;"></div></div></div></div></div></div>
+                </div>
+                <div class="two-col">
+                    <div class="card"><div class="card-header"><h3><i class="fas fa-chart-line" style="color:var(--primary);margin-right:8px;"></i> Patient Statistics</h3></div><div class="card-body"><div class="chart-placeholder"><div class="chart-bar" style="height:65%;"><span class="val">65%</span></div><div class="chart-bar" style="height:80%;"><span class="val">80%</span></div><div class="chart-bar" style="height:45%;"><span class="val">45%</span></div><div class="chart-bar" style="height:70%;"><span class="val">70%</span></div><div class="chart-bar" style="height:90%;"><span class="val">90%</span></div><div class="chart-bar" style="height:55%;"><span class="val">55%</span></div><div class="chart-bar" style="height:75%;"><span class="val">75%</span></div></div><div class="chart-labels"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div><div style="margin-top:14px;display:flex;justify-content:space-between;font-size:13px;color:var(--gray-500);"><span>⬤ Outpatient <strong style="color:var(--primary);">56%</strong></span><span>⬤ Inpatient <strong style="color:var(--warning);">45%</strong></span></div></div></div>
+                    <div class="card"><div class="card-header"><h3><i class="fas fa-calendar-week" style="color:var(--primary);margin-right:8px;"></i> Appointment Calendar</h3></div><div class="card-body"><div style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px;text-align:center;font-size:13px;"><div style="font-weight:600;color:var(--gray-400);">MON</div><div style="font-weight:600;color:var(--gray-400);">TUE</div><div style="font-weight:600;color:var(--gray-400);">WED</div><div style="font-weight:600;color:var(--gray-400);">THU</div><div style="font-weight:600;color:var(--gray-400);">FRI</div><div style="font-weight:600;color:var(--gray-400);">SAT</div><div style="font-weight:600;color:var(--gray-400);">SUN</div><div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div><div>7</div><div>8</div><div>9</div><div style="background:var(--primary);color:#fff;border-radius:50%;padding:4px 0;">10</div><div>11</div><div>12</div><div>13</div><div>14</div><div>15</div><div>16</div><div>17</div><div style="background:var(--primary-bg);border-radius:50%;padding:4px 0;font-weight:600;">18</div><div>19</div><div>20</div><div>21</div><div>22</div><div>23</div><div>24</div><div>25</div><div>26</div><div>27</div><div>28</div><div>29</div><div>30</div><div>31</div></div></div></div>
+                </div>
+            </section>
+
+            <!-- ============================================================
+            ADMIN DASHBOARD (Doctor/Admin Panel)
+            ============================================================ -->
+            <section class="page-section" id="page-admin-dashboard">
+                <h2 style="font-size:20px;font-weight:700;color:var(--gray-800);margin-bottom:16px;"><i class="fas fa-user-shield" style="color:var(--primary);margin-right:10px;"></i>Admin Panel — Doctor Overview</h2>
+                <div class="stats-grid">
+                    <div class="stat-card"><div class="stat-label"><i class="fas fa-user-md"></i> My Patients</div><div class="stat-value" id="adminMyPatients">0</div><div class="stat-change up"><i class="fas fa-arrow-up"></i> 5%</div></div>
+                    <div class="stat-card"><div class="stat-label"><i class="fas fa-calendar-check"></i> Today's Consultations</div><div class="stat-value">18</div><div class="stat-change neutral">Scheduled</div></div>
+                    <div class="stat-card"><div class="stat-label"><i class="fas fa-clock"></i> Pending Reports</div><div class="stat-value">7</div><div class="stat-change down"><i class="fas fa-arrow-down"></i> 2</div></div>
+                    <div class="stat-card"><div class="stat-label"><i class="fas fa-prescription"></i> Prescriptions Today</div><div class="stat-value">23</div><div class="stat-change up"><i class="fas fa-arrow-up"></i> 3</div></div>
+                </div>
+                <div class="two-col">
+                    <div class="card"><div class="card-header"><h3><i class="fas fa-list"></i> Today's Patient Queue</h3><button class="btn btn-primary btn-sm" onclick="callNextPatient()"><i class="fas fa-forward"></i> Call Next</button></div><div class="card-body" style="padding:0;"><div class="table-wrap"><table><thead><tr><th>Token</th><th>Patient</th><th>Time</th><th>Status</th></tr></thead><tbody id="adminQueueBody"><tr><td colspan="4" style="text-align:center;color:var(--gray-400);">No patients in queue</td></tr></tbody></table></div></div></div>
+                    <div class="card"><div class="card-header"><h3><i class="fas fa-chart-bar"></i> Consultation Summary</h3></div><div class="card-body"><div style="display:flex;flex-direction:column;gap:12px;"><div><span style="font-size:13px;font-weight:500;">Completed</span><div style="background:var(--gray-200);border-radius:10px;height:10px;margin-top:2px;"><div style="width:78%;height:100%;background:var(--success);border-radius:10px;"></div></div><span style="font-size:12px;color:var(--gray-500);">78%</span></div><div><span style="font-size:13px;font-weight:500;">In Progress</span><div style="background:var(--gray-200);border-radius:10px;height:10px;margin-top:2px;"><div style="width:15%;height:100%;background:var(--warning);border-radius:10px;"></div></div><span style="font-size:12px;color:var(--gray-500);">15%</span></div><div><span style="font-size:13px;font-weight:500;">Missed / Canceled</span><div style="background:var(--gray-200);border-radius:10px;height:10px;margin-top:2px;"><div style="width:7%;height:100%;background:var(--danger);border-radius:10px;"></div></div><span style="font-size:12px;color:var(--gray-500);">7%</span></div></div><div style="margin-top:16px;padding:12px 16px;background:var(--primary-bg);border-radius:10px;border:1px solid rgba(10,110,121,0.1);"><span style="font-size:13px;font-weight:600;color:var(--primary);"><i class="fas fa-info-circle"></i> Next patient: <span id="adminNextPatient">None</span></span></div></div></div>
+                </div>
+            </section>
+
+            <!-- ============================================================
+            PATIENT REGISTRATION
+            ============================================================ -->
+            <section class="page-section" id="page-register">
+                <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:16px;">
+                    <h2 style="font-size:20px;font-weight:700;color:var(--gray-800);"><i class="fas fa-user-plus" style="color:var(--primary);margin-right:10px;"></i>Patient Registration</h2>
+                    <span class="role-indicator patient"><i class="fas fa-user"></i> Patient Portal</span>
+                </div>
+                <div class="card">
+                    <div class="card-header"><h3><i class="fas fa-edit"></i> New Patient Form</h3><span style="font-size:12px;color:var(--gray-400);">Fields with <span style="color:var(--danger);">*</span> are required</span></div>
+                    <div class="card-body">
+                        <form id="registrationForm" onsubmit="registerPatient(event)">
+                            <div class="form-grid">
+                                <div class="form-group"><label>Full Name <span class="required">*</span></label><input type="text" id="regName" placeholder="e.g. John Doe" required /></div>
+                                <div class="form-group"><label>Date of Birth <span class="required">*</span></label><input type="date" id="regDob" required /></div>
+                                <div class="form-group"><label>Gender <span class="required">*</span></label><select id="regGender" required><option value="">Select</option><option>Male</option><option>Female</option><option>Other</option></select></div>
+                                <div class="form-group"><label>Blood Group</label><select id="regBlood"><option value="">Select</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>AB+</option><option>AB-</option><option>O+</option><option>O-</option></select></div>
+                                <div class="form-group"><label>Phone Number <span class="required">*</span></label><input type="tel" id="regPhone" placeholder="+91 98765 43210" required /></div>
+                                <div class="form-group"><label>Email</label><input type="email" id="regEmail" placeholder="patient@example.com" /></div>
+                                <div class="form-group full-width"><label>Address</label><input type="text" id="regAddress" placeholder="Street, City, State, ZIP" /></div>
+                                <div class="form-group full-width"><label>Emergency Contact</label><input type="text" id="regEmergency" placeholder="Name &amp; Phone" /></div>
+                                <div class="form-group full-width"><label>Allergies / Medical History</label><textarea id="regHistory" placeholder="Any known allergies, chronic conditions, or past surgeries…"></textarea></div>
+                            </div>
+                            <div style="display:flex;gap:12px;margin-top:20px;flex-wrap:wrap;">
+                                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Register Patient</button>
+                                <button type="reset" class="btn btn-outline"><i class="fas fa-undo"></i> Reset</button>
+                                <button type="button" class="btn btn-outline" onclick="generateDemoPatient()"><i class="fas fa-user-plus"></i> Demo Patient</button>
+                            </div>
+                        </form>
+                        <div id="registrationResult" style="margin-top:16px;display:none;"></div>
+                    </div>
+                </div>
+                <div style="margin-top:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;">
+                    <div class="stat-card"><div class="stat-label">Total Registered</div><div class="stat-value" id="totalRegistered">0</div></div>
+                    <div class="stat-card"><div class="stat-label">Today's Registrations</div><div class="stat-value" id="todayRegistered">0</div></div>
+                </div>
+            </section>
+
+            <!-- ============================================================
+            MY RECORDS (Patient View)
+            ============================================================ -->
+            <section class="page-section" id="page-my-records">
+                <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:16px;">
+                    <h2 style="font-size:20px;font-weight:700;color:var(--gray-800);"><i class="fas fa-notes-medical" style="color:var(--primary);margin-right:10px;"></i>My Medical Records</h2>
+                    <span class="role-indicator patient"><i class="fas fa-user"></i> Patient View</span>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-history"></i> Chronological Medical History</h3>
+                        <button class="btn btn-primary btn-sm" onclick="showAddConsultation()"><i class="fas fa-plus"></i> Add Consultation</button>
+                    </div>
+                    <div class="card-body">
+                        <div id="addConsultForm" style="display:none;" class="consult-form">
+                            <h4 style="margin-bottom:8px;font-size:14px;">New Consultation Record</h4>
+                            <div class="form-group"><label>Title</label><input type="text" id="consultTitle" placeholder="e.g. Follow-up visit" /></div>
+                            <div class="form-group"><label>Details</label><textarea id="consultDetail" placeholder="Symptoms, diagnosis, notes…"></textarea></div>
+                            <div class="form-group"><label>Doctor</label><input type="text" id="consultDoctor" placeholder="Dr. Name" /></div>
+                            <div style="display:flex;gap:10px;margin-top:8px;">
+                                <button class="btn btn-primary btn-sm" onclick="addConsultation()"><i class="fas fa-save"></i> Save Record</button>
+                                <button class="btn btn-outline btn-sm" onclick="document.getElementById('addConsultForm').style.display='none'">Cancel</button>
+                            </div>
+                        </div>
+                        <div class="record-timeline" id="recordTimeline">
+                            <div class="empty-state"><i class="fas fa-notes-medical"></i><p>No medical records found. Register or add a consultation.</p></div>
+                        </div>
+                        <button class="btn btn-outline btn-sm" style="margin-top:12px;" onclick="showToast('Loading more records…','info')"><i class="fas fa-chevron-down"></i> Load More</button>
+                    </div>
+                </div>
+                <div style="margin-top:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;">
+                    <div class="stat-card"><div class="stat-label">Total Records</div><div class="stat-value" id="recordCount">0</div></div>
+                    <div class="stat-card"><div class="stat-label">Last Consultation</div><div class="stat-value" style="font-size:18px;" id="lastConsultDate">—</div></div>
+                    <div class="stat-card"><div class="stat-label">Prescriptions</div><div class="stat-value">8</div></div>
+                </div>
+            </section>
+
+            <!-- ============================================================
+            WAITING TIME (Patient View)
+            ============================================================ -->
+            <section class="page-section" id="page-waiting">
+                <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:16px;">
+                    <h2 style="font-size:20px;font-weight:700;color:var(--gray-800);"><i class="fas fa-hourglass-half" style="color:var(--primary);margin-right:10px;"></i>Live Waiting Time</h2>
+                    <span class="role-indicator patient"><i class="fas fa-user"></i> Patient View</span>
+                </div>
+                <div class="waiting-banner">
+                    <div><div class="big-number" id="waitingNowServing">#—</div><div class="big-label">Now Serving</div></div>
+                    <div class="waiting-details">
+                        <div class="item"><div class="num" id="waitingQueueCount">0</div><div class="lbl">Patients Ahead</div></div>
+                        <div class="item"><div class="num" id="waitingEstimate">0 <span style="font-size:16px;">min</span></div><div class="lbl">Estimated Wait</div></div>
+                        <div class="item"><div class="num" id="waitingNextToken">#—</div><div class="lbl">Next Token</div></div>
+                    </div>
+                </div>
+                <div class="two-col">
+                    <div class="card"><div class="card-header"><h3><i class="fas fa-list-ol"></i> Live Queue</h3><span style="font-size:12px;color:var(--gray-400);">Auto-updates</span></div><div class="card-body" style="padding:0;"><div class="table-wrap"><table><thead><tr><th>Token</th><th>Patient</th><th>Department</th><th>Status</th></tr></thead><tbody id="patientQueueBody"><tr><td colspan="4" style="text-align:center;color:var(--gray-400);">Queue is empty</td></tr></tbody></table></div></div></div>
+                    <div class="card"><div class="card-header"><h3><i class="fas fa-chart-line"></i> Waiting Time Analytics</h3></div><div class="card-body"><div style="display:flex;flex-direction:column;gap:12px;"><div><span style="font-size:13px;font-weight:500;">Today's Avg Wait</span><div style="background:var(--gray-200);border-radius:10px;height:10px;margin-top:2px;"><div style="width:62%;height:100%;background:var(--warning);border-radius:10px;"></div></div><span style="font-size:12px;color:var(--gray-500);">14 min</span></div><div><span style="font-size:13px;font-weight:500;">Peak Wait (Last 7d)</span><div style="background:var(--gray-200);border-radius:10px;height:10px;margin-top:2px;"><div style="width:88%;height:100%;background:var(--danger);border-radius:10px;"></div></div><span style="font-size:12px;color:var(--gray-500);">38 min</span></div><div><span style="font-size:13px;font-weight:500;">Current Efficiency</span><div style="background:var(--gray-200);border-radius:10px;height:10px;margin-top:2px;"><div style="width:72%;height:100%;background:var(--success);border-radius:10px;"></div></div><span style="font-size:12px;color:var(--gray-500);">72%</span></div></div><div style="margin-top:16px;padding:12px 16px;background:var(--primary-bg);border-radius:10px;border:1px solid rgba(10,110,121,0.1);display:flex;align-items:center;gap:12px;"><i class="fas fa-info-circle" style="color:var(--primary);font-size:18px;"></i><span style="font-size:13px;color:var(--gray-600);">Your estimated wait time is <strong style="color:var(--primary);" id="waitingEstimateText">—</strong>. We'll notify you when your turn is near.</span></div></div></div>
+                </div>
+                <div class="queue-display">
+                    <div class="queue-item highlight"><div class="token" id="qtNowServing">#—</div><div class="label">Now Serving</div><div class="sub" id="qtNowDoctor">—</div></div>
+                    <div class="queue-item"><div class="token" id="qtNext">#—</div><div class="label">Next</div><div class="sub" id="qtNextEstimate">—</div></div>
+                    <div class="queue-item"><div class="token" id="qtWaitingCount">0</div><div class="label">Waiting Patients</div><div class="sub">Across all departments</div></div>
+                    <div class="queue-item emergency"><div class="token">⚠️</div><div class="label">Emergency Priority</div><div class="sub">2 critical cases ahead</div></div>
+                </div>
+            </section>
+
+            <!-- ============================================================
+            PATIENTS (Admin View)
+            ============================================================ -->
+            <section class="page-section" id="page-patients">
+                <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:16px;">
+                    <h2 style="font-size:20px;font-weight:700;color:var(--gray-800);"><i class="fas fa-user-injured" style="color:var(--primary);margin-right:10px;"></i>Patient Management</h2>
+                    <button class="btn btn-primary" onclick="navigateTo('register')"><i class="fas fa-plus"></i> Register Patient</button>
+                </div>
+                <div class="toolbar">
+                    <div class="search-box"><i class="fas fa-search"></i><input type="text" placeholder="Search by ID, name, phone…" id="patientSearch" oninput="filterPatients()" /></div>
+                    <div class="filters"><select id="filterStatus"><option value="all">All Status</option><option value="Active">Active</option><option value="Inactive">Inactive</option><option value="Pending">Pending</option></select><button class="btn btn-outline btn-sm" onclick="filterPatients()"><i class="fas fa-sliders-h"></i> Filter</button></div>
+                </div>
+                <div class="card"><div class="card-body" style="padding:0;"><div class="table-wrap"><table><thead><tr><th>UHID</th><th>Name</th><th>Gender</th><th>DOB</th><th>Phone</th><th>Blood Group</th><th>Status</th><th>Actions</th></tr></thead><tbody id="patientTableBody"><tr><td colspan="8" style="text-align:center;color:var(--gray-400);">No patients registered.</td></tr></tbody></table></div></div></div>
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px;font-size:13px;color:var(--gray-500);">
+                    <span id="patientCountDisplay">Showing 0 patients</span>
+                    <div style="display:flex;gap:6px;"><button class="btn btn-outline btn-sm">Prev</button><button class="btn btn-primary btn-sm">1</button><button class="btn btn-outline btn-sm">2</button><button class="btn btn-outline btn-sm">3</button><button class="btn btn-outline btn-sm">Next</button></div>
+                </div>
+            </section>
+
+            <!-- ============================================================
+            APPOINTMENTS (static demo)
+            ============================================================ -->
+            <section class="page-section" id="page-appointments">
+                <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:16px;">
+                    <h2 style="font-size:20px;font-weight:700;color:var(--gray-800);"><i class="fas fa-calendar-check" style="color:var(--primary);margin-right:10px;"></i>Appointments</h2>
+                    <button class="btn btn-primary" onclick="showToast('New appointment booking opened.','success')"><i class="fas fa-plus"></i> Book Appointment</button>
+                </div>
+                <div class="toolbar"><div class="search-box"><i class="fas fa-search"></i><input type="text" placeholder="Search appointments…" /></div><div class="filters"><select><option>All Departments</option><option>Cardiology</option><option>Orthopedics</option><option>Neurology</option><option>Pediatrics</option></select><select><option>All Status</option><option>Scheduled</option><option>Completed</option><option>Cancelled</option></select><button class="btn btn-outline btn-sm"><i class="fas fa-calendar-alt"></i> Today</button><button class="btn btn-outline btn-sm"><i class="fas fa-calendar-week"></i> Week</button><button class="btn btn-outline btn-sm"><i class="fas fa-calendar-alt"></i> Month</button></div></div>
+                <div class="card"><div class="card-body" style="padding:0;"><div class="table-wrap"><table><thead><tr><th>Time</th><th>Patient</th><th>Doctor</th><th>Department</th><th>Status</th><th>Actions</th></tr></thead><tbody><tr><td>7:28 AM</td><td>Jordan Rivers</td><td>Dr. Mehta</td><td>Cardiology</td><td><span class="badge-status scheduled">Scheduled</span></td><td><button class="btn btn-primary btn-sm" onclick="showToast('Rescheduling…','success')"><i class="fas fa-edit"></i></button></td></tr><tr><td>11:12 AM</td><td>Taylor Green</td><td>Dr. Patel</td><td>Orthopedics</td><td><span class="badge-status completed">Completed</span></td><td><button class="btn btn-primary btn-sm" onclick="showToast('Viewing details…','success')"><i class="fas fa-eye"></i></button></td></tr><tr><td>2:31 PM</td><td>Morgan Sky</td><td>Dr. Sharma</td><td>Neurology</td><td><span class="badge-status scheduled">Scheduled</span></td><td><button class="btn btn-primary btn-sm" onclick="showToast('Rescheduling…','success')"><i class="fas fa-edit"></i></button></td></tr></tbody></table></div></div></div>
+            </section>
+
+            <!-- ============================================================
+            QUEUE (Admin View)
+            ============================================================ -->
+            <section class="page-section" id="page-queue">
+                <h2 style="font-size:20px;font-weight:700;color:var(--gray-800);margin-bottom:16px;"><i class="fas fa-clock" style="color:var(--primary);margin-right:10px;"></i>Queue &amp; Waiting-Time Management</h2>
+                <div class="queue-display" id="adminQueueDisplay">
+                    <div class="queue-item highlight"><div class="token" id="aqNowServing">#—</div><div class="label">Now Serving</div><div class="sub" id="aqNowDoctor">—</div></div>
+                    <div class="queue-item"><div class="token" id="aqNext">#—</div><div class="label">Next</div><div class="sub" id="aqNextEstimate">—</div></div>
+                    <div class="queue-item"><div class="token" id="aqCount">0</div><div class="label">Waiting Patients</div><div class="sub">Across all departments</div></div>
+                    <div class="queue-item"><div class="token" id="aqAvgWait">0 min</div><div class="label">Avg. Wait Time</div><div class="sub">Today's average</div></div>
+                </div>
+                <div class="card"><div class="card-header"><h3>Active Queue</h3><button class="btn btn-primary btn-sm" onclick="callNextPatient()"><i class="fas fa-forward"></i> Call Next</button></div><div class="card-body" style="padding:0;"><div class="table-wrap"><table><thead><tr><th>Token</th><th>Patient</th><th>Doctor</th><th>Department</th><th>Priority</th><th>Status</th></tr></thead><tbody id="queueTableBodyAdmin"><tr><td colspan="6" style="text-align:center;color:var(--gray-400);">No patients in queue.</td></tr></tbody></table></div></div></div>
+            </section>
+
+            <!-- ============================================================
+            DOCTORS (static)
+            ============================================================ -->
+            <section class="page-section" id="page-doctors">
+                <h2 style="font-size:20px;font-weight:700;color:var(--gray-800);margin-bottom:16px;"><i class="fas fa-user-md" style="color:var(--primary);margin-right:10px;"></i>Doctor Management</h2>
+                <div class="module-grid"><div class="module-card"><div class="icon"><i class="fas fa-user-md"></i></div><h4>Dr. Mehta</h4><p>Cardiology • 12 yrs exp</p><div class="count">Today: 8 appointments</div></div><div class="module-card"><div class="icon"><i class="fas fa-user-md"></i></div><h4>Dr. Patel</h4><p>Orthopedics • 9 yrs exp</p><div class="count">Today: 6 appointments</div></div><div class="module-card"><div class="icon"><i class="fas fa-user-md"></i></div><h4>Dr. Sharma</h4><p>Neurology • 15 yrs exp</p><div class="count">Today: 5 appointments</div></div><div class="module-card"><div class="icon"><i class="fas fa-user-md"></i></div><h4>Dr. Gupta</h4><p>Pediatrics • 7 yrs exp</p><div class="count">Today: 9 appointments</div></div></div>
+            </section>
+
+            <!-- ============================================================
+            EMR (static demo)
+            ============================================================ -->
+            <section class="page-section" id="page-emr">
+                <h2 style="font-size:20px;font-weight:700;color:var(--gray-800);margin-bottom:16px;"><i class="fas fa-file-medical" style="color:var(--primary);margin-right:10px;"></i>Electronic Medical Records</h2>
+                <div class="card"><div class="card-header"><h3>Recent Consultations</h3><button class="btn btn-primary btn-sm" onclick="showToast('New EMR entry opened.','success')"><i class="fas fa-plus"></i> New Record</button></div><div class="card-body" style="padding:0;"><div class="table-wrap"><table><thead><tr><th>Patient</th><th>Doctor</th><th>Date</th><th>Diagnosis</th><th>Status</th></tr></thead><tbody><tr><td>Jordan Rivers</td><td>Dr. Mehta</td><td>2026-08-21</td><td>Hypertension, Stage 2</td><td><span class="badge-status active">Completed</span></td></tr><tr><td>Taylor Green</td><td>Dr. Patel</td><td>2026-08-20</td><td>ACL Tear</td><td><span class="badge-status active">Completed</span></td></tr></tbody></table></div></div></div>
+            </section>
+
+            <!-- ============================================================
+            BILLING (static demo)
+            ============================================================ -->
+            <section class="page-section" id="page-billing">
+                <h2 style="font-size:20px;font-weight:700;color:var(--gray-800);margin-bottom:16px;"><i class="fas fa-file-invoice-dollar" style="color:var(--primary);margin-right:10px;"></i>Billing &amp; Payments</h2>
+                <div class="stats-grid" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr));"><div class="stat-card"><div class="stat-label">Today's Revenue</div><div class="stat-value">$12,840</div></div><div class="stat-card"><div class="stat-label">Pending Bills</div><div class="stat-value" style="color:var(--warning);">34</div></div><div class="stat-card"><div class="stat-label">Unpaid</div><div class="stat-value" style="color:var(--danger);">12</div></div></div>
+                <div class="card"><div class="card-body" style="padding:0;"><div class="table-wrap"><table><thead><tr><th>Invoice #</th><th>Patient</th><th>Amount</th><th>Status</th><th>Action</th></tr></thead><tbody><tr><td>INV-2026-0842</td><td>Arjun Reddy</td><td>$240.00</td><td><span class="badge-status active">Paid</span></td><td><button class="btn btn-primary btn-sm" onclick="showToast('Generating receipt…','success')"><i class="fas fa-print"></i></button></td></tr><tr><td>INV-2026-0841</td><td>Priya Sharma</td><td>$180.50</td><td><span class="badge-status pending">Pending</span></td><td><button class="btn btn-primary btn-sm" onclick="showToast('Processing payment…','success')"><i class="fas fa-credit-card"></i></button></td></tr></tbody></table></div></div></div>
+            </section>
+
+            <!-- ============================================================
+            PHARMACY (static)
+            ============================================================ -->
+            <section class="page-section" id="page-pharmacy">
+                <h2 style="font-size:20px;font-weight:700;color:var(--gray-800);margin-bottom:16px;"><i class="fas fa-pills" style="color:var(--primary);margin-right:10px;"></i>Pharmacy</h2>
+                <div class="stats-grid" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr));"><div class="stat-card"><div class="stat-label">Total Medicines</div><div class="stat-value">342</div></div><div class="stat-card"><div class="stat-label">Low Stock Alerts</div><div class="stat-value" style="color:var(--warning);">18</div></div><div class="stat-card"><div class="stat-label">Expiring Soon</div><div class="stat-value" style="color:var(--danger);">7</div></div></div>
+                <div class="card"><div class="card-body" style="padding:0;"><div class="table-wrap"><table><thead><tr><th>Medicine</th><th>Category</th><th>Stock</th><th>Expiry</th><th>Status</th></tr></thead><tbody><tr><td>Paracetamol 500mg</td><td>Analgesic</td><td>2,450</td><td>2027-03-15</td><td><span class="badge-status active">In Stock</span></td></tr><tr><td>Amoxicillin 250mg</td><td>Antibiotic</td><td>124</td><td>2026-10-01</td><td><span class="badge-status pending">Low Stock</span></td></tr></tbody></table></div></div></div>
+            </section>
+
+            <!-- ============================================================
+            LABORATORY (static)
+            ============================================================ -->
+            <section class="page-section" id="page-laboratory">
+                <h2 style="font-size:20px;font-weight:700;color:var(--gray-800);margin-bottom:16px;"><i class="fas fa-flask" style="color:var(--primary);margin-right:10px;"></i>Laboratory</h2>
+                <div class="stats-grid" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr));"><div class="stat-card"><div class="stat-label">Pending Tests</div><div class="stat-value" style="color:var(--warning);">23</div></div><div class="stat-card"><div class="stat-label">Processing</div><div class="stat-value" style="color:var(--info);">12</div></div><div class="stat-card"><div class="stat-label">Completed Today</div><div class="stat-value" style="color:var(--success);">41</div></div></div>
+                <div class="card"><div class="card-body" style="padding:0;"><div class="table-wrap"><table><thead><tr><th>Test</th><th>Patient</th><th>Status</th><th>Result</th></tr></thead><tbody><tr><td>CBC</td><td>Jordan Rivers</td><td><span class="badge-status active">Completed</span></td><td><button class="btn btn-primary btn-sm" onclick="showToast('Viewing report…','success')"><i class="fas fa-file-alt"></i></button></td></tr><tr><td>Lipid Profile</td><td>Taylor Green</td><td><span class="badge-status pending">Processing</span></td><td>—</td></tr></tbody></table></div></div></div>
+            </section>
+
+            <!-- ============================================================
+            REPORTS (static)
+            ============================================================ -->
+            <section class="page-section" id="page-reports">
+                <h2 style="font-size:20px;font-weight:700;color:var(--gray-800);margin-bottom:16px;"><i class="fas fa-chart-pie" style="color:var(--primary);margin-right:10px;"></i>Reports &amp; Analytics</h2>
+                <div class="two-col"><div class="card"><div class="card-header"><h3>Revenue Trend</h3></div><div class="card-body"><div style="height:120px;display:flex;align-items:flex-end;gap:8px;padding:8px 0;"><div style="flex:1;background:var(--primary-bg);height:40%;border-radius:4px 4px 0 0;"></div><div style="flex:1;background:var(--primary-bg);height:60%;border-radius:4px 4px 0 0;"></div><div style="flex:1;background:var(--primary-bg);height:35%;border-radius:4px 4px 0 0;"></div><div style="flex:1;background:var(--primary-bg);height:75%;border-radius:4px 4px 0 0;"></div><div style="flex:1;background:var(--primary-bg);height:90%;border-radius:4px 4px 0 0;"></div><div style="flex:1;background:var(--primary-bg);height:50%;border-radius:4px 4px 0 0;"></div><div style="flex:1;background:var(--primary-bg);height:65%;border-radius:4px 4px 0 0;"></div></div></div></div><div class="card"><div class="card-header"><h3>Department Workload</h3></div><div class="card-body"><div style="display:flex;flex-direction:column;gap:8px;"><div><span style="font-size:13px;font-weight:500;">Cardiology</span><div style="background:var(--gray-200);border-radius:10px;height:8px;margin-top:2px;"><div style="width:78%;height:100%;background:var(--primary);border-radius:10px;"></div></div></div><div><span style="font-size:13px;font-weight:500;">Orthopedics</span><div style="background:var(--gray-200);border-radius:10px;height:8px;margin-top:2px;"><div style="width:62%;height:100%;background:var(--primary);border-radius:10px;"></div></div></div><div><span style="font-size:13px;font-weight:500;">Neurology</span><div style="background:var(--gray-200);border-radius:10px;height:8px;margin-top:2px;"><div style="width:45%;height:100%;background:var(--primary);border-radius:10px;"></div></div></div></div></div></div></div>
+                <button class="btn btn-primary" onclick="showToast('Exporting report as PDF…','success')"><i class="fas fa-download"></i> Export Report</button>
+            </section>
+
+        </div><!-- /content -->
+    </div><!-- /main -->
+
+    <!-- ============================================================
+    TOAST CONTAINER
+    ============================================================ -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- ============================================================
+    JAVASCRIPT (FULL APP STATE & RENDER LOGIC)
+    ============================================================ -->
+    <script>
+        // ============================================================
+        // APP STATE
+        // ============================================================
+        let appState = {
+            patients: [],
+            queue: [],
+            nextToken: 1,
+            nowServing: null,
+            selectedPatientId: null,
+            currentRole: 'admin',
+            todayRegistrations: 0,
+            totalRegistrations: 0
+        };
+
+        // ============================================================
+        // DEMO DATA
+        // ============================================================
+        function initDemoData() {
+            const demoPatients = [
+                { id: 'P-10042', name: 'Arjun Reddy', dob: '1987-05-12', gender: 'Male', phone: '+91 98765 43210',
+                    blood: 'B+', status: 'Active', address: 'Mumbai, India', emergency: '98765 43210',
+                    history: 'Hypertension', records: [{ date: '2026-08-21', title: 'Consultation',
+                        detail: 'BP: 120/80. Prescribed medication.', doctor: 'Dr. Mehta' }] },
+                { id: 'P-10041', name: 'Priya Sharma', dob: '1992-08-23', gender: 'Female', phone: '+91 87654 32109',
+                    blood: 'O-', status: 'Active', address: 'Delhi, India', emergency: '87654 32109',
+                    history: 'None', records: [{ date: '2026-08-20', title: 'Follow-up',
+                        detail: 'ACL recovery progressing well.', doctor: 'Dr. Patel' }] },
+                { id: 'P-10040', name: 'Vikram Singh', dob: '1975-01-04', gender: 'Male', phone: '+91 76543 21098',
+                    blood: 'A+', status: 'Inactive', address: 'Pune, India', emergency: '76543 21098',
+                    history: 'Diabetes', records: [{ date: '2026-08-15', title: 'Lab Report',
+                        detail: 'HbA1c: 7.2%. Stable.', doctor: 'Dr. Sharma' }] }
+            ];
+
+            appState.patients = demoPatients;
+            appState.totalRegistrations = demoPatients.length;
+            appState.todayRegistrations = 2;
+
+            // Build queue from patients (first 2)
+            demoPatients.slice(0, 2).forEach((p, idx) => {
+                appState.queue.push({
+                    token: String(42 + idx).padStart(3, '0'),
+                    patientId: p.id,
+                    name: p.name,
+                    doctor: idx === 0 ? 'Dr. Mehta' : 'Dr. Patel',
+                    department: idx === 0 ? 'Cardiology' : 'Orthopedics',
+                    priority: 'Normal',
+                    status: idx === 0 ? 'In Consultation' : 'Waiting'
+                });
+            });
+            appState.nextToken = 46;
+            appState.nowServing = appState.queue[0] || null;
+
+            // Select first patient for records view
+            appState.selectedPatientId = demoPatients[0].id;
+        }
+        initDemoData();
+
+        // ============================================================
+        // NAVIGATION
+        // ============================================================
+        const navItems = document.querySelectorAll('.nav-item');
+        const pageSections = document.querySelectorAll('.page-section');
+        const pageTitle = document.getElementById('pageTitle');
+        const roleIndicator = document.getElementById('roleIndicator');
+
+        const pageTitles = {
+            dashboard: 'Dashboard <span>/ Overview</span>',
+            'admin-dashboard': 'Admin Panel <span>/ Doctor Overview</span>',
+            patients: 'Patients <span>/ Management</span>',
+            appointments: 'Appointments <span>/ Scheduling</span>',
+            queue: 'Queue <span>/ Waiting Time</span>',
+            doctors: 'Doctors <span>/ Management</span>',
+            emr: 'EMR <span>/ Electronic Medical Records</span>',
+            billing: 'Billing <span>/ Payments</span>',
+            pharmacy: 'Pharmacy <span>/ Management</span>',
+            laboratory: 'Laboratory <span>/ Tests</span>',
+            reports: 'Reports <span>/ Analytics</span>',
+            register: 'Patient Registration <span>/ New Patient</span>',
+            'my-records': 'My Medical Records <span>/ Patient View</span>',
+            waiting: 'Live Waiting Time <span>/ Patient View</span>'
+        };
+
+        function navigateTo(page) {
+            navItems.forEach(el => el.classList.remove('active'));
+            const targetNav = document.querySelector(`.nav-item[data-page="${page}"]`);
+            if (targetNav) targetNav.classList.add('active');
+
+            pageSections.forEach(el => el.classList.remove('active'));
+            const targetSection = document.getElementById(`page-${page}`);
+            if (targetSection) targetSection.classList.add('active');
+
+            if (pageTitles[page]) {
+                pageTitle.innerHTML = pageTitles[page];
+            } else {
+                pageTitle.textContent = page.charAt(0).toUpperCase() + page.slice(1);
+            }
+            document.getElementById('sidebar').classList.remove('open');
+
+            // Update badge
+            updateQueueBadge();
+        }
+
+        navItems.forEach(item => {
+            item.addEventListener('click', function() {
+                const page = this.dataset.page;
+                if (page) navigateTo(page);
+            });
+        });
+
+        // ============================================================
+        // SIDEBAR TOGGLE
+        // ============================================================
+        document.getElementById('menuToggle').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('open');
+        });
+
+        // ============================================================
+        // DATE DISPLAY
+        // ============================================================
+        const now = new Date();
+        document.getElementById('dateDisplay').textContent =
+            now.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+
+        // ============================================================
+        // TOAST
+        // ============================================================
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            const icon = type === 'success' ? 'fas fa-check-circle' :
+                type === 'error' ? 'fas fa-exclamation-circle' :
+                'fas fa-info-circle';
+            toast.innerHTML = `<i class="${icon}"></i> ${message}`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(20px)';
+                setTimeout(() => toast.remove(), 300);
+            }, 2800);
+        }
+
+        // ============================================================
+        // ROLE SWITCH
+        // ============================================================
+        function setView(role) {
+            appState.currentRole = role;
+            const viewAdmin = document.getElementById('viewAdmin');
+            const viewPatient = document.getElementById('viewPatient');
+            const avatar = document.getElementById('userAvatar');
+            const userName = document.getElementById('userName');
+            const userRole = document.getElementById('userRole');
+
+            if (role === 'admin') {
+                viewAdmin.classList.add('active');
+                viewPatient.classList.remove('active');
+                roleIndicator.className = 'role-indicator doctor';
+                roleIndicator.innerHTML = '<i class="fas fa-user-md"></i> Admin';
+                avatar.textContent = 'DR';
+                userName.textContent = 'Dr. Rajesh';
+                userRole.textContent = 'Super Admin';
+                document.querySelectorAll('.nav-item').forEach(el => {
+                    const p = el.dataset.page;
+                    if (p === 'register' || p === 'my-records' || p === 'waiting') el.style.display = 'none';
+                    else el.style.display = 'flex';
+                });
+                // If on patient page, go to dashboard
+                const active = document.querySelector('.page-section.active');
+                if (active && ['page-register', 'page-my-records', 'page-waiting'].includes(active.id)) {
+                    navigateTo('dashboard');
+                }
+                showToast('Switched to Admin / Doctor view', 'info');
+            } else {
+                viewAdmin.classList.remove('active');
+                viewPatient.classList.add('active');
+                roleIndicator.className = 'role-indicator patient';
+                roleIndicator.innerHTML = '<i class="fas fa-user"></i> Patient';
+                avatar.textContent = 'JD';
+                userName.textContent = 'John Doe';
+                userRole.textContent = 'Patient';
+                document.querySelectorAll('.nav-item').forEach(el => {
+                    const p = el.dataset.page;
+                    if (p === 'register' || p === 'my-records' || p === 'waiting') el.style.display = 'flex';
+                    else el.style.display = 'flex';
+                });
+                const active = document.querySelector('.page-section.active');
+                if (active && ['page-admin-dashboard', 'page-billing', 'page-pharmacy', 'page-laboratory',
+                        'page-reports'
+                    ].includes(active.id)) {
+                    navigateTo('register');
+                }
+                showToast('Switched to Patient view', 'info');
+            }
+            renderAll();
+        }
+
+        function toggleRole() {
+            setView(appState.currentRole === 'admin' ? 'patient' : 'admin');
+        }
+
+        // Initialize with admin
+        setView('admin');
+
+        // ============================================================
+        // RENDER FUNCTIONS
+        // ============================================================
+        function renderAll() {
+            renderPatientTable();
+            renderQueueTables();
+            renderRecords();
+            renderStats();
+            renderAdminDashboard();
+            renderWaitingBanner();
+            updateQueueBadge();
+        }
+
+        function renderStats() {
+            document.getElementById('statTotalPatients').textContent = appState.patients.length;
+            document.getElementById('statQueueCount').textContent = appState.queue.length;
+            document.getElementById('totalRegistered').textContent = appState.totalRegistrations;
+            document.getElementById('todayRegistered').textContent = appState.todayRegistrations;
+            document.getElementById('adminMyPatients').textContent = appState.patients.length;
+        }
+
+        function renderPatientTable() {
+            const tbody = document.getElementById('patientTableBody');
+            const search = document.getElementById('patientSearch')?.value?.toLowerCase() || '';
+            const filter = document.getElementById('filterStatus')?.value || 'all';
+
+            let filtered = appState.patients.filter(p => {
+                const matchSearch = p.name.toLowerCase().includes(search) || p.id.toLowerCase().includes(search) || p
+                    .phone.includes(search);
+                const matchStatus = filter === 'all' || p.status === filter;
+                return matchSearch && matchStatus;
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML =
+                    `<tr><td colspan="8" style="text-align:center;color:var(--gray-400);">No patients found.</td></tr>`;
+            } else {
+                tbody.innerHTML = filtered.map(p => `
+                            <tr>
+                                <td><strong>${p.id}</strong></td>
+                                <td>${p.name}</td>
+                                <td>${p.gender}</td>
+                                <td>${p.dob}</td>
+                                <td>${p.phone}</td>
+                                <td>${p.blood || '—'}</td>
+                                <td><span class="badge-status ${p.status === 'Active' ? 'active' : p.status === 'Inactive' ? 'inactive' : 'pending'}">${p.status}</span></td>
+                                <td><button class="btn btn-primary btn-sm" onclick="viewPatient('${p.id}')"><i class="fas fa-eye"></i></button></td>
+                            </tr>
+                        `).join('');
+            }
+            document.getElementById('patientCountDisplay').textContent = `Showing ${filtered.length} of ${appState.patients.length} patients`;
+        }
+
+        function filterPatients() { renderPatientTable(); }
+
+        function viewPatient(id) {
+            appState.selectedPatientId = id;
+            navigateTo('my-records');
+            renderRecords();
+            showToast(`Viewing records for ${appState.patients.find(p=>p.id===id)?.name}`, 'info');
+        }
+
+        function renderQueueTables() {
+            // Admin Queue Table
+            const adminBody = document.getElementById('queueTableBodyAdmin');
+            const adminQueueBody = document.getElementById('adminQueueBody');
+
+            if (appState.queue.length === 0) {
+                adminBody.innerHTML =
+                `<tr><td colspan="6" style="text-align:center;color:var(--gray-400);">No patients in queue.</td></tr>`;
+                adminQueueBody.innerHTML =
+                    `<tr><td colspan="4" style="text-align:center;color:var(--gray-400);">No patients in queue</td></tr>`;
+            } else {
+                adminBody.innerHTML = appState.queue.map((q, idx) => `
+                            <tr>
+                                <td><strong>#${q.token}</strong></td>
+                                <td>${q.name}</td>
+                                <td>${q.doctor}</td>
+                                <td>${q.department}</td>
+                                <td><span class="badge-status ${q.priority === 'Critical' ? 'critical' : q.priority === 'Urgent' ? 'urgent' : 'normal'}">${q.priority}</span></td>
+                                <td><span class="badge-status ${q.status === 'In Consultation' ? 'active' : 'waiting'}">${q.status}</span></td>
+                            </tr>
+                        `).join('');
+
+                // Admin queue list (shorter)
+                adminQueueBody.innerHTML = appState.queue.slice(0, 5).map(q => `
+                            <tr>
+                                <td><strong>#${q.token}</strong></td>
+                                <td>${q.name}</td>
+                                <td>${q.status === 'In Consultation' ? 'Now' : '—'}</td>
+                                <td><span class="badge-status ${q.status === 'In Consultation' ? 'active' : 'waiting'}">${q.status}</span></td>
+                            </tr>
+                        `).join('');
+            }
+
+            // Patient Queue View
+            const patientBody = document.getElementById('patientQueueBody');
+            if (appState.queue.length === 0) {
+                patientBody.innerHTML =
+                    `<tr><td colspan="4" style="text-align:center;color:var(--gray-400);">Queue is empty</td></tr>`;
+            } else {
+                patientBody.innerHTML = appState.queue.map(q => `
+                            <tr>
+                                <td><strong>#${q.token}</strong></td>
+                                <td>${q.name}</td>
+                                <td>${q.department}</td>
+                                <td><span class="badge-status ${q.status === 'In Consultation' ? 'active' : 'waiting'}">${q.status}</span></td>
+                            </tr>
+                        `).join('');
+            }
+
+            // Admin Queue Display cards
+            const nowServing = appState.nowServing || appState.queue[0] || null;
+            const next = appState.queue.length > 1 ? appState.queue[1] : null;
+            document.getElementById('aqNowServing').textContent = nowServing ? `#${nowServing.token}` : '#—';
+            document.getElementById('aqNowDoctor').textContent = nowServing ? `${nowServing.doctor} • ${nowServing.department}` :
+                '—';
+            document.getElementById('aqNext').textContent = next ? `#${next.token}` : '#—';
+            document.getElementById('aqNextEstimate').textContent = next ? 'Estimated wait: 8 min' : '—';
+            document.getElementById('aqCount').textContent = appState.queue.length;
+            const avgWait = Math.min(30, appState.queue.length * 2 + 5);
+            document.getElementById('aqAvgWait').textContent = `${avgWait} min`;
+
+            // Admin next patient label
+            document.getElementById('adminNextPatient').textContent = next ? `${next.name} (#${next.token})` : 'None';
+
+            updateQueueBadge();
+        }
+
+        function renderRecords() {
+            const timeline = document.getElementById('recordTimeline');
+            const patient = appState.patients.find(p => p.id === appState.selectedPatientId) || appState.patients[0];
+
+            if (!patient || !patient.records || patient.records.length === 0) {
+                timeline.innerHTML =
+                    `<div class="empty-state"><i class="fas fa-notes-medical"></i><p>No medical records found.</p></div>`;
+                document.getElementById('recordCount').textContent = '0';
+                document.getElementById('lastConsultDate').textContent = '—';
+                return;
+            }
+
+            const sorted = [...patient.records].sort((a, b) => new Date(b.date) - new Date(a.date));
+            timeline.innerHTML = sorted.map(r => `
+                        <div class="record-item">
+                            <div class="record-date">${r.date}</div>
+                            <div class="record-title">${r.title}</div>
+                            <div class="record-detail">${r.detail}</div>
+                            <div class="record-doc">${r.doctor || 'Unknown'}</div>
+                        </div>
+                    `).join('');
+            document.getElementById('recordCount').textContent = patient.records.length;
+            document.getElementById('lastConsultDate').textContent = sorted[0]?.date || '—';
+        }
+
+        function renderAdminDashboard() {
+            // Already handled in renderQueueTables and stats
+        }
+
+        function renderWaitingBanner() {
+            const nowServing = appState.nowServing || appState.queue[0] || null;
+            const next = appState.queue.length > 1 ? appState.queue[1] : null;
+            const count = appState.queue.length;
+
+            document.getElementById('waitingNowServing').textContent = nowServing ? `#${nowServing.token}` : '#—';
+            document.getElementById('waitingQueueCount').textContent = count;
+            const est = Math.min(30, count * 2 + 5);
+            document.getElementById('waitingEstimate').innerHTML = `${est} <span style="font-size:16px;">min</span>`;
+            document.getElementById('waitingNextToken').textContent = next ? `#${next.token}` : '#—';
+            document.getElementById('waitingEstimateText').textContent = `${est} minutes`;
+
+            document.getElementById('qtNowServing').textContent = nowServing ? `#${nowServing.token}` : '#—';
+            document.getElementById('qtNowDoctor').textContent = nowServing ? `${nowServing.doctor} • ${nowServing.department}` :
+                '—';
+            document.getElementById('qtNext').textContent = next ? `#${next.token}` : '#—';
+            document.getElementById('qtNextEstimate').textContent = next ? 'Estimated wait: 8 min' : '—';
+            document.getElementById('qtWaitingCount').textContent = count;
+        }
+
+        function updateQueueBadge() {
+            const badge = document.getElementById('queueBadge');
+            if (badge) badge.textContent = appState.queue.length;
+        }
+
+        // ============================================================
+        // PATIENT REGISTRATION
+        // ============================================================
+        function registerPatient(e) {
+            e.preventDefault();
+            const name = document.getElementById('regName').value.trim();
+            const dob = document.getElementById('regDob').value;
+            const gender = document.getElementById('regGender').value;
+            const phone = document.getElementById('regPhone').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const address = document.getElementById('regAddress').value.trim();
+            const emergency = document.getElementById('regEmergency').value.trim();
+            const history = document.getElementById('regHistory').value.trim();
+
+            if (!name || !dob || !gender || !phone) {
+                showToast('Please fill in all required fields (*).', 'error');
+                return;
+            }
+
+            const id = 'P-' + (10000 + appState.totalRegistrations + 1);
+            const newPatient = {
+                id,
+                name,
+                dob,
+                gender,
+                phone,
+                blood: document.getElementById('regBlood').value || '—',
+                status: 'Active',
+                address: address || '—',
+                emergency: emergency || '—',
+                history: history || 'None',
+                records: []
+            };
+
+            appState.patients.push(newPatient);
+            appState.totalRegistrations++;
+            appState.todayRegistrations++;
+
+            // Add to queue
+            const token = String(appState.nextToken).padStart(3, '0');
+            appState.queue.push({
+                token: token,
+                patientId: id,
+                name: name,
+                doctor: 'Dr. Assigned',
+                department: 'General Medicine',
+                priority: 'Normal',
+                status: 'Waiting'
+            });
+            appState.nextToken++;
+
+            // If no one is serving, set as now serving
+            if (!appState.nowServing) {
+                appState.nowServing = appState.queue[0];
+            }
+
+            const resultDiv = document.getElementById('registrationResult');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = `
+                        <div style="background:#e8f8ef;border:1px solid #a9dfbf;border-radius:10px;padding:16px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+                            <i class="fas fa-check-circle" style="color:var(--success);font-size:24px;"></i>
+                            <div>
+                                <strong style="font-size:15px;">Patient Registered Successfully!</strong>
+                                <div style="font-size:13px;color:var(--gray-600);">
+                                    <span style="font-weight:600;">UHID:</span> ${id} &nbsp;|&nbsp; 
+                                    <span style="font-weight:600;">Name:</span> ${name} &nbsp;|&nbsp; 
+                                    <span style="font-weight:600;">Token:</span> #${token}
+                                </div>
+                            </div>
+                            <button class="btn btn-primary btn-sm" onclick="document.getElementById('registrationForm').reset(); document.getElementById('registrationResult').style.display='none'; showToast('Form cleared.','info')">
+                                <i class="fas fa-plus"></i> Register Another
+                            </button>
+                        </div>
+                    `;
+
+            renderAll();
+            showToast(`✅ ${name} registered with UHID ${id} (Token #${token})`, 'success');
+        }
+
+        function generateDemoPatient() {
+            document.getElementById('regName').value = 'Demo Patient ' + Math.floor(Math.random() * 1000);
+            document.getElementById('regDob').value = '1990-01-01';
+            document.getElementById('regGender').value = 'Male';
+            document.getElementById('regPhone').value = '+91 9' + Math.floor(Math.random() * 90000000 + 10000000);
+            document.getElementById('regEmail').value = 'demo' + Math.floor(Math.random() * 1000) + '@example.com';
+            document.getElementById('regAddress').value = '123 Demo Street, Sample City';
+            document.getElementById('regEmergency').value = 'Emergency Contact: 98765 43210';
+            document.getElementById('regHistory').value = 'No known allergies. Generally healthy.';
+            showToast('Demo patient data loaded. Review and register.', 'info');
+        }
+
+        // ============================================================
+        // CONSULTATION (Add to Records)
+        // ============================================================
+        function showAddConsultation() {
+            const form = document.getElementById('addConsultForm');
+            form.style.display = form.style.display === 'none' ? 'block' : 'none';
+            if (form.style.display === 'block') {
+                document.getElementById('consultTitle').value = '';
+                document.getElementById('consultDetail').value = '';
+                document.getElementById('consultDoctor').value = 'Dr. Assigned';
+            }
+        }
+
+        function addConsultation() {
+            const title = document.getElementById('consultTitle').value.trim();
+            const detail = document.getElementById('consultDetail').value.trim();
+            const doctor = document.getElementById('consultDoctor').value.trim() || 'Dr. Assigned';
+
+            if (!title || !detail) {
+                showToast('Please provide title and details.', 'error');
+                return;
+            }
+
+            const patient = appState.patients.find(p => p.id === appState.selectedPatientId) || appState.patients[0];
+            if (!patient) {
+                showToast('No patient selected.', 'error');
+                return;
+            }
+
+            const today = new Date().toISOString().split('T')[0];
+            patient.records.push({
+                date: today,
+                title: title,
+                detail: detail,
+                doctor: doctor
+            });
+
+            document.getElementById('addConsultForm').style.display = 'none';
+            renderRecords();
+            showToast(`Consultation added for ${patient.name}`, 'success');
+        }
+
+        // ============================================================
+        // CALL NEXT PATIENT
+        // ============================================================
+        function callNextPatient() {
+            if (appState.queue.length === 0) {
+                showToast('Queue is empty!', 'error');
+                return;
+            }
+
+            // Remove the first (serving) or just shift
+            const serving = appState.queue.shift();
+            appState.nowServing = appState.queue.length > 0 ? appState.queue[0] : null;
+
+            // Update status of the new first to 'In Consultation'
+            if (appState.queue.length > 0) {
+                appState.queue[0].status = 'In Consultation';
+            }
+
+            renderAll();
+            showToast(`✅ Called #${serving.token} ${serving.name}. Next: ${appState.nowServing ? '# '+appState.nowServing.token : 'None'}`, 'success');
+        }
+
+        // ============================================================
+        // AUTO-UPDATE (simulate queue progress)
+        // ============================================================
+        setInterval(() => {
+            // Just re-render to keep UI fresh, but don't auto-call next.
+            // We'll just update the waiting time estimates dynamically.
+            if (appState.queue.length > 0) {
+                // update estimate text
+                const est = Math.min(30, appState.queue.length * 2 + 5);
+                document.getElementById('waitingEstimate').innerHTML = `${est} <span style="font-size:16px;">min</span>`;
+                document.getElementById('waitingEstimateText').textContent = `${est} minutes`;
+                document.getElementById('aqAvgWait').textContent = `${est} min`;
+            }
+        }, 10000);
+
+        // ============================================================
+        // KEYBOARD SHORTCUTS
+        // ============================================================
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                document.getElementById('sidebar').classList.remove('open');
+            }
+            if (e.key === 'Enter' && document.activeElement.id === 'patientSearch') {
+                filterPatients();
+            }
+        });
+
+        // ============================================================
+        // CLICK OUTSIDE SIDEBAR
+        // ============================================================
+        document.addEventListener('click', function(e) {
+            const sidebar = document.getElementById('sidebar');
+            const toggle = document.getElementById('menuToggle');
+            if (window.innerWidth <= 992) {
+                if (!sidebar.contains(e.target) && !toggle.contains(e.target)) {
+                    sidebar.classList.remove('open');
+                }
+            }
+        });
+
+        // ============================================================
+        // INIT
+        // ============================================================
+        window.addEventListener('load', function() {
+            renderAll();
+            setTimeout(() => {
+                showToast('🏥 Panacea HMS Live — Registration, Queue & Records connected.', 'success');
+            }, 600);
+        });
+
+        console.log('🏥 Panacea HMS Live loaded.');
+        console.log('📊 State:', appState);
+    </script>
+</body>
+</html>
